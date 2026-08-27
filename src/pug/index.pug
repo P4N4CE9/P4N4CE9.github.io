@@ -1,0 +1,66 @@
+.app
+  input#menuToggle(type="checkbox")
+
+  header.header
+    .header-inner
+      label.burger(for="menuToggle" aria-label="Меню")
+        span
+        span
+        span
+
+      .logo
+        | ✦ LOREM
+        small рыба
+
+      nav.nav-menu
+        a(href="#") Главная
+        a(href="#") Услуги
+        a(href="#") Портфолио
+        a(href="#") Блог
+        a(href="#") Контакты
+        a(href="#") О нас
+        a(href="#") Партнёры
+        a(href="#") Поддержка
+
+  main.main
+    section.cards-section
+      h2 Карточки
+      .cards-grid
+        - const cardCount = 16;
+        - const loremTexts = [
+        -   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        -   'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        -   'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+        -   'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.',
+        -   'Excepteur sint occaecat cupidatat non proident, sunt in culpa.',
+        -   'Quis autem vel eum iure reprehenderit qui in ea voluptate velit.',
+        -   'At vero eos et accusamus et iusto odio dignissimos ducimus.',
+        -   'Nam libero tempore, cum soluta nobis est eligendi optio cumque.',
+        -   'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.',
+        -   'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.',
+        -   'Consectetur, adipisci velit, sed quia non numquam eius modi tempora.',
+        -   'Incidunt ut labore et dolore magnam aliquam quaerat voluptatem.',
+        -   'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis.',
+        -   'Quis autem vel eum iure reprehenderit qui in ea voluptate velit.',
+        -   'At vero eos et accusamus et iusto odio dignissimos ducimus qui.',
+        -   'Nam libero tempore, cum soluta nobis est eligendi optio cumque.'
+        - ];
+        - for (let i = 0; i < cardCount; i++) {
+          .card
+            .card-title Карта #{i+1}
+            .card-text= loremTexts[i % loremTexts.length]
+        - }
+
+    .info-block
+      h3 What is Lorem Ipsum?
+      p Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+  footer.footer
+    .footer-inner
+      span © 2026 Sveak Test Task
+      span
+        a(href="#") Политика
+        |  · 
+        a(href="#") Условия
+        |  · 
+        a(href="#") Конфиденциальность

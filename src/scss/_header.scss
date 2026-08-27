@@ -1,0 +1,238 @@
+@use 'variables' as *;
+
+.header {
+  position: relative;
+  z-index: 100;
+  background: transparent;
+}
+
+.header-inner {
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  min-height: $header-height;
+  position: relative;
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: #353746;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 32px;
+  flex-shrink: 0;
+
+  small {
+    font-weight: 400;
+    font-size: 0.65rem;
+    opacity: 0.5;
+    letter-spacing: 0.2px;
+  }
+}
+
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  z-index: 102;
+  flex-shrink: 0;
+  margin-right: 12px;
+
+  span {
+    display: block;
+    height: 2.5px;
+    width: 100%;
+    background: #1e293b;
+    border-radius: 4px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+}
+
+#menuToggle {
+  display: none;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+
+  a {
+    text-decoration: none;
+    color: #1e293b;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background: $color-hover;
+      color: #0f172a;
+    }
+  }
+}
+
+@media (min-width: $breakpoint-menu + 1px) {
+  .header {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: $menu-width;
+    background: #e5f6e9;
+    border-right: 1px solid rgba(72, 128, 92, 0.12);
+  }
+
+  .header-inner {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 28px 18px;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .logo {
+    margin: 0 10px 44px;
+    font-size: 1.05rem;
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+
+    a {
+      padding: 12px 14px;
+      color: #53665c;
+      font-size: 0.84rem;
+
+      &:hover,
+      &:first-child {
+        background: rgba(255, 255, 255, 0.7);
+        color: #293a31;
+      }
+
+      &:first-child {
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(64, 107, 78, 0.08);
+      }
+    }
+  }
+}
+
+/* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
+@media (max-width: $breakpoint-menu) {
+  .burger {
+    display: flex;
+  }
+
+  .logo {
+    margin-right: auto;
+  }
+
+  /* Анимация бургера в крестик - используем ~ для соседних элементов */
+  #menuToggle:checked ~ .app .burger span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+
+  #menuToggle:checked ~ .app .burger span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0.2);
+  }
+
+  #menuToggle:checked ~ .app .burger span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+
+  /* Затемнение фона */
+  #menuToggle:checked ~ .app::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $color-overlay;
+    z-index: 99;
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* Само меню - выезжает слева */
+  #menuToggle:checked ~ .app .nav-menu {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .app .nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: $menu-width;
+    height: 100vh;
+    background: $color-white;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 80px 20px 24px;
+    gap: 4px;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.08);
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                opacity 0.25s ease,
+                visibility 0.25s;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: 100;
+    border-right: 1px solid $color-border;
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border-radius: 12px;
+      background: transparent;
+      color: $color-text;
+      font-weight: 500;
+      transition: background 0.15s ease;
+      text-decoration: none;
+      border: none;
+      white-space: nowrap;
+
+      &:hover {
+        background: $color-active;
+      }
+
+      &:first-child {
+        background: $color-active;
+        font-weight: 600;
+      }
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}

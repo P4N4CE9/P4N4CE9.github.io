@@ -1,0 +1,136 @@
+@use 'variables' as *;
+
+.main {
+  flex: 1 0 auto;
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 22px 24px 30px;
+  width: 100%;
+}
+
+.cards-section {
+  margin-bottom: 28px;
+
+  h2 {
+    font-weight: 500;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    color: #343747;
+  }
+}
+
+.cards-grid {
+  display: grid;
+  gap: $gap;
+  margin-top: $gap;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: $breakpoint-tablet) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $gap-desktop;
+  }
+
+  @media (min-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: $gap-desktop;
+  }
+}
+
+.card {
+  background: #dcecf3;
+  border-radius: $card-radius;
+  padding: $card-padding;
+  box-shadow: none;
+  border: 1px solid rgba(102, 140, 157, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  min-height: $card-min-height;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.02);
+    border-color: rgba(102, 140, 157, 0.18);
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    color: #374653;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-text {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: $color-text-secondary;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    flex: 1;
+  }
+}
+
+@media (min-width: #{$breakpoint-mobile + 1px}) and (max-width: #{$breakpoint-tablet - 1px}) {
+  .cards-grid:has(.card:last-child:nth-child(2n+1)) .card:last-child {
+    display: none;
+  }
+}
+
+@media (min-width: $breakpoint-tablet) and (max-width: #{$breakpoint-desktop - 1px}) {
+  .cards-grid:has(.card:last-child:nth-child(3n+1)) .card:last-child,
+  .cards-grid:has(.card:last-child:nth-child(3n+2)) .card:last-child {
+    display: none;
+  }
+  .cards-grid:has(.card:last-child:nth-child(3n+2)) .card:nth-last-child(2) {
+    display: none;
+  }
+}
+
+@media (min-width: $breakpoint-desktop) {
+  .cards-grid:has(.card:last-child:nth-child(4n+1)) .card:last-child,
+  .cards-grid:has(.card:last-child:nth-child(4n+2)) .card:last-child,
+  .cards-grid:has(.card:last-child:nth-child(4n+3)) .card:last-child {
+    display: none;
+  }
+  .cards-grid:has(.card:last-child:nth-child(4n+2)) .card:nth-last-child(2),
+  .cards-grid:has(.card:last-child:nth-child(4n+3)) .card:nth-last-child(2),
+  .cards-grid:has(.card:last-child:nth-child(4n+3)) .card:nth-last-child(3) {
+    display: none;
+  }
+}
+
+/* ===== ИНФО БЛОК - ТЕПЕРЬ НА ВСЮ ШИРИНУ ===== */
+.info-block {
+  margin-top: 28px;
+  border-top: 1px solid $color-border;
+  padding-top: 18px;
+  max-width: 760px;
+
+  h3 {
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+  }
+
+  p {
+    color: $color-text-secondary;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    width: 100%; /* Растягиваем на всю ширину */
+  }
+}
