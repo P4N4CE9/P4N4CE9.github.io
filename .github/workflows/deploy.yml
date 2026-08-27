@@ -1,12 +1,10 @@
 name: Build and deploy to GitHub Pages
 
-# триггер
 on:
   push:
     branches:
       - main
 
-# требуется дать workflow права на запись в репозиторий/Pages
 permissions:
   contents: write
   pages: write
@@ -19,7 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # persist-credentials true по умолчанию; явно указываем, чтобы checkout мог использовать GITHUB_TOKEN для push
           persist-credentials: true
 
       - name: Setup Node.js
@@ -36,19 +33,59 @@ jobs:
           mkdir -p public
           rsync -av --exclude='.git' --exclude='node_modules' . public/
 
+      - name: List public (before build)
+        run: |
+          echo "=== public tree (before build) ==="
+          ls -la public || true
+          ls -la public/src || true
+          echo "=================================="
+
       - name: Compile SCSS -> CSS
         run: |
           mkdir -p public/src/css
+          echo "Compiling src/scss/style.scss -> public/src/css/style.css"
           sass src/scss/style.scss public/src/css/style.css --no-source-map --style=compressed
+          echo "SASS exit code: $?"
+          echo "=== compiled file info ==="
+          ls -la public/src/css || true
+          echo "=== head of compiled css ==="
+          head -n 20 public/src/css/style.css || true
+
+      - name: Fail if compiled CSS missing
+        run: |
+          if [ ! -f public/src/css/style.css ]; then
+            echo "ERROR: compiled CSS not found at public/src/css/style.css"
+            echo "Check earlier logs for sass output"
+            exit 1
+          fi
+
+      - name: Show index.html head (before)
+        run: |
+          echo "=== index.html head (before) ==="
+          sed -n '1,40p' public/index.html || true
+          echo "================================="
 
       - name: Update index.html to use compiled CSS
         run: |
+          # Use perl replacement that's robust for different sed variants
           if [ -f public/index.html ]; then
-            sed -i 's@/src/scss/style.scss@/src/css/style.css@g' public/index.html || true
+            perl -0777 -pe 's@href="(/?src/scss/style.scss)"@href="/src/css/style.css"@g' -i public/index.html || true
           fi
+
+      - name: Show index.html head (after)
+        run: |
+          echo "=== index.html head (after) ==="
+          sed -n '1,40p' public/index.html || true
+          echo "================================"
 
       - name: Add .nojekyll (prevent Jekyll processing)
         run: touch public/.nojekyll
+
+      - name: Debug public tree (before deploy)
+        run: |
+          echo "=== public tree (before deploy) ==="
+          find public -maxdepth 4 -type f -print -exec ls -la {} \; || true
+          echo "==================================="
 
       - name: Deploy to GitHub Pages (gh-pages branch)
         uses: peaceiris/actions-gh-pages@v4
