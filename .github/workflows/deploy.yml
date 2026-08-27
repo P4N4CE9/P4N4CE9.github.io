@@ -3,7 +3,7 @@ name: Build and deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # триггер при пуше в main, поменяйте на вашу ветку если нужно
+      - main  # поменяйте на вашу основную ветку при необходимости
 
 jobs:
   build-and-deploy:
@@ -17,32 +17,37 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies (optional)
-        run: |
-          if [ -f package.json ]; then npm ci; else npm i sass; fi
+      - name: Install dart-sass globally
+        run: npm install -g sass@1.62.1
 
       - name: Prepare public directory
         run: |
           rm -rf public
-          mkdir public
-          # Копируем все файлы проекта в public, исключая node_modules и .git
+          mkdir -p public
+          # Копируем все файлы проекта в public, исключая .git и node_modules
           rsync -av --exclude='.git' --exclude='node_modules' . public/
 
       - name: Compile SCSS -> CSS
         run: |
-          # Убедиться, что целевая папка для скомпилированного css существует
+          # Убедиться, что папка для итогового CSS существует
           mkdir -p public/src/css
-          # Компилирует src/scss/style.scss в public/src/css/style.css
-          npx sass src/scss/style.scss public/src/css/style.css --no-source-map --style=compressed
+          # Компиляция основного SCSS в сжатый CSS
+          sass src/scss/style.scss public/src/css/style.css --no-source-map --style=compressed
 
-      - name: Fix index.html references (update path to CSS)
+      - name: Update index.html to use compiled CSS
         run: |
-          # Заменяем ссылку на scss на путь к скомпилированному css
-          sed -i 's@/src/scss/style.scss@/src/css/style.css@g' public/index.html
+          if [ -f public/index.html ]; then
+            # Заменяем ссылку на .scss на путь к скомпилированному .css
+            sed -i 's@/src/scss/style.scss@/src/css/style.css@g' public/index.html || true
+          fi
+
+      - name: Add .nojekyll (prevent Jekyll processing)
+        run: |
+          touch public/.nojekyll
 
       - name: Deploy to GitHub Pages (gh-pages branch)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          # optional: publish_branch: gh-pages  # по умолчанию gh-pages
+          publish_branch: gh-pages
