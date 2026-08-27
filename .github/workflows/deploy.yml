@@ -1,0 +1,48 @@
+name: Build and deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # триггер при пуше в main, поменяйте на вашу ветку если нужно
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (optional)
+        run: |
+          if [ -f package.json ]; then npm ci; else npm i sass; fi
+
+      - name: Prepare public directory
+        run: |
+          rm -rf public
+          mkdir public
+          # Копируем все файлы проекта в public, исключая node_modules и .git
+          rsync -av --exclude='.git' --exclude='node_modules' . public/
+
+      - name: Compile SCSS -> CSS
+        run: |
+          # Убедиться, что целевая папка для скомпилированного css существует
+          mkdir -p public/src/css
+          # Компилирует src/scss/style.scss в public/src/css/style.css
+          npx sass src/scss/style.scss public/src/css/style.css --no-source-map --style=compressed
+
+      - name: Fix index.html references (update path to CSS)
+        run: |
+          # Заменяем ссылку на scss на путь к скомпилированному css
+          sed -i 's@/src/scss/style.scss@/src/css/style.css@g' public/index.html
+
+      - name: Deploy to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          # optional: publish_branch: gh-pages  # по умолчанию gh-pages
