@@ -1,0 +1,32 @@
+// Colors
+$color-bg: #f2f3f4;
+$color-text: #2d3040;
+$color-text-secondary: #646879;
+$color-text-muted: #8b8e9b;
+$color-white: #ffffff;
+$color-border: rgba(53, 55, 70, 0.09);
+$color-shadow: rgba(53, 55, 70, 0.08);
+$color-hover: #eeeafa;
+$color-overlay: rgba(0, 0, 0, 0.4);
+$color-active: #dfd1fa;
+
+// Fonts
+$font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+// Breakpoints
+$breakpoint-mobile: 400px;
+$breakpoint-tablet: 640px;
+$breakpoint-desktop: 1024px;
+$breakpoint-menu: 820px;
+
+// Spacing
+$gap: 14px;
+$gap-desktop: 18px;
+$header-height: 68px;
+$container-max: 1360px;
+$menu-width: 224px;
+
+// Card
+$card-min-height: 142px;
+$card-radius: 8px;
+$card-padding: 16px 14px 14px;
