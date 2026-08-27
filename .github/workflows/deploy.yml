@@ -1,9 +1,16 @@
 name: Build and deploy to GitHub Pages
 
+# триггер
 on:
   push:
     branches:
-      - main  # поменяйте на вашу основную ветку при необходимости
+      - main
+
+# требуется дать workflow права на запись в репозиторий/Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -11,6 +18,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # persist-credentials true по умолчанию; явно указываем, чтобы checkout мог использовать GITHUB_TOKEN для push
+          persist-credentials: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -24,26 +34,21 @@ jobs:
         run: |
           rm -rf public
           mkdir -p public
-          # Копируем все файлы проекта в public, исключая .git и node_modules
           rsync -av --exclude='.git' --exclude='node_modules' . public/
 
       - name: Compile SCSS -> CSS
         run: |
-          # Убедиться, что папка для итогового CSS существует
           mkdir -p public/src/css
-          # Компиляция основного SCSS в сжатый CSS
           sass src/scss/style.scss public/src/css/style.css --no-source-map --style=compressed
 
       - name: Update index.html to use compiled CSS
         run: |
           if [ -f public/index.html ]; then
-            # Заменяем ссылку на .scss на путь к скомпилированному .css
             sed -i 's@/src/scss/style.scss@/src/css/style.css@g' public/index.html || true
           fi
 
       - name: Add .nojekyll (prevent Jekyll processing)
-        run: |
-          touch public/.nojekyll
+        run: touch public/.nojekyll
 
       - name: Deploy to GitHub Pages (gh-pages branch)
         uses: peaceiris/actions-gh-pages@v4
