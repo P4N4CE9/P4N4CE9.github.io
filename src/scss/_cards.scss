@@ -114,7 +114,6 @@
   }
 }
 
-/* ===== ИНФО БЛОК - ТЕПЕРЬ НА ВСЮ ШИРИНУ ===== */
 .info-block {
   margin-top: 28px;
   border-top: 1px solid $color-border;
@@ -131,6 +130,6 @@
     color: $color-text-secondary;
     line-height: 1.6;
     font-size: 0.95rem;
-    width: 100%; /* Растягиваем на всю ширину */
+    width: 100%;
   }
 }
