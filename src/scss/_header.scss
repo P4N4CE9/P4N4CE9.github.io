@@ -147,7 +147,6 @@
     margin-right: auto;
   }
 
-  /* Анимация бургера в крестик - используем ~ для соседних элементов */
   #menuToggle:checked ~ .app .burger span:nth-child(1) {
     transform: translateY(9px) rotate(45deg);
   }
@@ -161,7 +160,6 @@
     transform: translateY(-9px) rotate(-45deg);
   }
 
-  /* Затемнение фона */
   #menuToggle:checked ~ .app::before {
     content: '';
     position: fixed;
@@ -174,7 +172,6 @@
     animation: fadeIn 0.3s ease;
   }
 
-  /* Само меню - выезжает слева */
   #menuToggle:checked ~ .app .nav-menu {
     transform: translateX(0);
     opacity: 1;
